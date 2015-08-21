@@ -8,12 +8,16 @@ function Agent( workingDir ) {
 	var instance = this;
 
 	instance.on( 'check permissions', function() {
+		console.log( '* check permissions' );
 		var uid = parseInt( process.env.SUDO_UID );
 		if (!uid) {
 			console.log( 'this must be run with sudo!' );
-			process.exit( 1 );	
+			instance.emit( 'check permissions done', 1 ); 
 		}  
-		process.setuid( uid );
+		else {
+			process.setuid( uid );
+			instance.emit( 'check permissions done', 0 ); 
+		}
 	} ); 
 	
 	instance.on( 'check working dir', function() {
@@ -24,7 +28,7 @@ function Agent( workingDir ) {
 	});
 
 	instance.on( 'check env', function() {
-		console.log( '* check env:');
+		console.log( '* check env:' );
 		cp.fork( 'check_env' )
 		.on( 'exit', function(code) { 
 			instance.emit( 'check env done', code ); 
