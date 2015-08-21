@@ -18,9 +18,7 @@ require( './Agent' ).register( controller );
 when( 'check working dir done', 'check env' );
 when( 'check env done', 'configure' );
 when( 'configure done', 'build' );
-when( 'build done', 'done' );
-
-controller.on( 'done', function(code) {
+when( 'build done', function(code) {
 	if (!code) {
 		console.log( 'done' ); 
 	}
@@ -32,7 +30,12 @@ function when( pre, post )
 {
 	controller.on( pre, function(code) {
 		if (!code) {
-			controller.emit( post ); 
+			if (typeof post === 'function') {
+				post(code);
+			}
+			else {
+				controller.emit( post ); 
+			}
 		}
 	} );
 }
