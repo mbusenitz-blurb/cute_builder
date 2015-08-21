@@ -1,25 +1,11 @@
-#!/usr/bin/env node
-
 var cp = require( 'child_process' );
 
-checkRuby();
-checkPython();
-checkPerl();
+check( 'ruby -v' );
+check( 'python --version' );
+check( 'perl -v' );
 
-function checkPerl() {
-	cp.exec( 'perl -v', function(err, stdout, stderr) {
-		if (err) throw err;
-	});
-}
-
-function checkPython() {
-	cp.exec( 'python --version', function(err, stdout, stderr) {
-		if (err) throw err;
-	});
-}
-
-function checkRuby() {
-	cp.exec( 'ruby -v', function(err, stdout, stderr) {
+function check( cmd ) {
+	cp.exec( cmd, function(err, stdout, stderr) {
 		if (err) throw err;
 	});
 }
