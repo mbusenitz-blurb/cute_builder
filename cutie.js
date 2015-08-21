@@ -1,13 +1,3 @@
-#!/usr/bin/env node
-
-/* 
-NOTE: 
-
-This script needs to be run from a "Visual studio command line prompt", 
-see "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
-
-*/ 
-
 var cp = require( 'child_process' )
   , EventEmitter = new require( 'events' ).EventEmitter
   , controller = new EventEmitter(); 
