@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* 
 NOTE: 
 
@@ -10,28 +12,27 @@ var cp = require( 'child_process' )
   , EventEmitter = new require( 'events' ).EventEmitter
   , controller = new EventEmitter(); 
 
-require( './Agent' ).register( controller ); 
+require( './Agent' ).register( controller );
 
-controller.on( 'check working dir done', function() {
-	controller.emit( 'check env' );
-});
 
-controller.on( 'check env done', function(code) {
-	if (!code) {
-		controller.emit( 'configure' ); 
-	}
-});
+when( 'check working dir done', 'check env' );
+when( 'check env done', 'configure' );
+when( 'configure done', 'build' );
+when( 'build done', 'done' );
 
-controller.on( 'configure done', function(code) {
-	if (!code) {
-		controller.emit( 'build' ); 
-	}
-});
-
-controller.on( 'build done', function(code) {
+controller.on( 'done', function(code) {
 	if (!code) {
 		console.log( 'done' ); 
 	}
 });
 
 controller.emit( 'check working dir' ); 
+
+function when( pre, post )
+{
+	controller.on( pre, function(code) {
+		if (!code) {
+			controller.emit( post ); 
+		}
+	} );
+}
