@@ -1,32 +1,62 @@
 var cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , workingDir = '/Users/jenkins/qt_source/qt5';
+  , util = require( 'util' )
+  , events = require( 'events' );
 
-function Agent( controller ) {
+function Agent( workingDir ) {
+
+	var instance = this;
+
+	instance.on( 'check permissions', function() {
+		var uid = parseInt( process.env.SUDO_UID );
+		if (!uid) {
+			console.log( 'this must be run with sudo!' );
+			process.exit( 1 );	
+		}  
+		process.setuid( uid );
+	} ); 
 	
-	controller.on( 'check working dir', function() {
+	instance.on( 'check working dir', function() {
 		console.log( '* check working dir: ', workingDir );
 		fs.exists( workingDir, function(exists) {
-			controller.emit( 'check working dir done', exists ? 0 : 1 ); 
+			instance.emit( 'check working dir done', exists ? 0 : 1 ); 
 		});
 	});
 
-	controller.on( 'check env', function() {
+	instance.on( 'check env', function() {
 		console.log( '* check env:');
 		cp.fork( 'check_env' )
 		.on( 'exit', function(code) { 
-			controller.emit( 'check env done', code ); 
+			instance.emit( 'check env done', code ); 
 		});
 	});
+
+	instance.spawn = function( name, cmd, args ) {
+		console.log( '* ' + name + ':', cmd, args ); 
+		cp
+		.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
+		.on( 'exit', function(code) {
+			instance.emit( name + ' done', code ); 
+		});
+	};
+
+	instance.after = function( pre, post ) {
+		instance.on( pre, function(code) {
+			if (!code) {
+				if (typeof post === 'function') {
+					post();
+				}
+				else {
+					instance.emit( post ); 
+				}
+			}
+			else {
+				console.log( '"' + pre + '" result: failed' );
+			}
+		} );
+	};
 }
 
-Agent.prototype.spawn = function( name, cmd, args ) {
-	console.log( '* ' + name + ':', cmd, args ); 
-	cp
-	.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
-	.on( 'exit', function(code) {
-		controller.emit( name + ' done', code ); 
-	});
-};
+util.inherits( Agent, events.EventEmitter ); 
 
-module.exports.Agent = Agent;
+module.exports = Agent;
