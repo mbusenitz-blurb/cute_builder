@@ -7,12 +7,7 @@ function register( controller ) {
 	controller.on( 'check working dir', function() {
 		console.log( 'check working dir: ', workingDir );
 		fs.exists( workingDir, function(exists) {
-			if (exists) {
-				controller.emit( 'check working dir done' ); 
-			}
-			else {
-				console.log( 'failed' ); 
-			}
+			controller.emit( 'check working dir done', exists ? 0 : 1 ); 
 		});
 	});
 
