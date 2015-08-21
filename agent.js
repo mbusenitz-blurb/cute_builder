@@ -1,6 +1,6 @@
 var cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , workingDir = 'C:\\Qt\\Qt5.4.1\\5.4\\Src\\';
+  , workingDir = '/Users/jenkins/qt_source/qt5';
 
 function register( controller ) {
 
@@ -25,26 +25,22 @@ function register( controller ) {
 	});
 
 	controller.on( 'build', function() {
-		spawnStep( 'build', 'nmake', [ 'install' ] );
+		spawnStep( 'build', 'make', [ '-j', '8' ] );
 	});
+
+	controller.on( 'install', function() {
+		spawnStep( 'install', 'make', [ 'install' ] );
+	});	
 
 	controller.on( 'configure', function() {
 		spawnStep( 
 			'configure', 
-			'cmd.exe', 
+			'./configure',
 			[ 
-				'/s', 
-				'/c', 
-				'configure.bat',
-				'-debug-and-release',
-				'-prefix', 'C:\\Qt\\5.4.1_test_build\\msvc2013',
-				'-commercial',
-				'-nomake', 'tests', 
-				'-nomake', 'examples', 
-				'-confirm-license',
-				'-target', 'xp',
-				'-opengl', 'desktop', 
-				'-openssl', '-I', 'C:\\OpenSSL-Win32\\include', '-L', 'C:\\OpenSSL-Win32\\lib'
+				"-no-xcb",
+				"-opensource",
+				"-confirm-license",
+				"--prefix=/Users/jenkins/qt_build_destination"
 			]
 		); 
 	} ); 

@@ -10,6 +10,13 @@ var cp = require( 'child_process' )
   , EventEmitter = new require( 'events' ).EventEmitter
   , controller = new EventEmitter(); 
 
+var uid = parseInt( process.env.SUDO_UID );
+if (!uid) {
+	console.log( 'this must be run with sudo!' );
+	process.exit( 1 );	
+}  
+if (uid) process.setuid( uid );
+
 require( './Agent' ).register( controller ); 
 
 controller.on( 'check working dir done', function() {
@@ -30,8 +37,15 @@ controller.on( 'configure done', function(code) {
 
 controller.on( 'build done', function(code) {
 	if (!code) {
-		console.log( 'done' ); 
+		controller.emit( 'install' );
 	}
 });
 
+controller.on( 'install done', function(code) {
+	if (!code) {
+		console.log( 'done' );
+	}
+});
+
+//controller.emit( 'build' ); 
 controller.emit( 'check working dir' ); 

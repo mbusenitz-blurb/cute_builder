@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var cp = require( 'child_process' );
 
 checkRuby();
@@ -20,4 +22,4 @@ function checkRuby() {
 	cp.exec( 'ruby -v', function(err, stdout, stderr) {
 		if (err) throw err;
 	});
-} 
+}
