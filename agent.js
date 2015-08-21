@@ -1,32 +1,53 @@
 var cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , workingDir = '';
+  , util = require( 'util' )
+  , events = require( 'events' );
 
-function Agent( controller ) {
+function Agent( workingDir ) {
 
-	controller.on( 'check working dir', function() {
+	var instance = this;
+	
+	instance.on( 'check working dir', function() {
 		console.log( '* check working dir: ', workingDir );
 		fs.exists( workingDir, function(exists) {
-			controller.emit( 'check working dir done', exists ? 0 : 1 ); 
+			instance.emit( 'check working dir done', exists ? 0 : 1 ); 
 		});
 	});
 
-	controller.on( 'check env', function() {
+	instance.on( 'check env', function() {
 		console.log( '* check env:');
 		cp.fork( 'check_env' )
 		.on( 'exit', function(code) { 
-			controller.emit( 'check env done', code ); 
+			instance.emit( 'check env done', code ); 
 		});
 	});
+
+	instance.spawn = function( name, cmd, args ) {
+		console.log( '* ' + name + ':', cmd, args ); 
+		cp
+		.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
+		.on( 'exit', function(code) {
+			instance.emit( name + ' done', code ); 
+		});
+	};
+
+	instance.after = function( pre, post ) {
+		instance.on( pre, function(code) {
+			if (!code) {
+				if (typeof post === 'function') {
+					post();
+				}
+				else {
+					instance.emit( post ); 
+				}
+			}
+			else {
+				console.log( '"' + pre + '" result: failed' );
+			}
+		} );
+	};
 }
 
-Agent.prototype.spawn = function( name, cmd, args ) {
-	console.log( '* ' + name + ':', cmd, args ); 
-	cp
-	.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
-	.on( 'exit', function(code) {
-		controller.emit( name + ' done', code ); 
-	});
-};
+util.inherits( Agent, events.EventEmitter ); 
 
-module.exports.Agent = Agent;
+module.exports = Agent;
