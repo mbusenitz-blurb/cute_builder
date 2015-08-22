@@ -43,10 +43,8 @@ function Agent( config ) {
 	};
 
 	this.configure = function() {
-		return new Promise( function( resolve, reject ) {
-			config.configure( spawn, resolve, reject ); 
-		} ); 
-	};
+		return config.configure( spawn ); 
+	};	
 
 	this.build = function() {
 		return new Promise( function( resolve, reject ) {
@@ -64,12 +62,15 @@ function Agent( config ) {
 		return new Promise( function( reslove, reject ) {
 			cp
 			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
-			.on( 'exit', function(code) {
+			.on( 'exit', function(code, signal) {
 				if (code) 
-					reject( cmd );
+					reject( cmd + code + signal );
 				else
 					resolve();				
-			});
+			})
+			.on( 'error', function(error) {
+				reject( cmd + ' ' + error + ' ' + workingDir );
+			} );
 		});
 	};
 }
