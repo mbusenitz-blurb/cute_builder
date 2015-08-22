@@ -7,14 +7,11 @@ agent
 .checkWorkingDir()
 .then( agent.checkEnv )
 .then( agent.configure ) 
-.catch( function( error ) {
+.then( agent.build )
+.then( agent.install )
+.then( function() {
+	console.log( 'done' ); 
+}).catch( function( error ) {
 	console.log( error );
 }); 
 
-// 
-// .then( os.configre )
-// .then( os.build )
-// .then( os.install )
-// .then( function() {
-// 	console.log( 'done' ); 
-// })

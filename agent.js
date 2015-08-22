@@ -41,13 +41,13 @@ function Agent( config ) {
 	};
 
 	this.build = function() {
-		return new Promise( function( reslove, reject ) {
+		return new Promise( function( resolve, reject ) {
 			config.build( spawn, resolve, reject );
 		} ); 
 	};
 
 	this.install = function() {
-		return new Promise( function( reslove, reject ) {
+		return new Promise( function( resolve, reject ) {
 			config.install( spawn, resolve, reject );
 		} ); 
 	};
