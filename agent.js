@@ -1,27 +1,18 @@
 var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , Promise = require( 'promise' )
-  , program = require( 'commander' );
+  , util = require( 'util' )
+  , Promise = require( 'promise' ); 
 
-program
-  .version('0.0.0')
-  .option('-p, --path []', 'working directory')
-  .parse(process.argv);
+function Agent( config, workingDir ) {
 
-assert( program.path ); 
+	assert( typeof workingDir !== 'undefined' ); 
 
-function Agent( config ) {
-
-	var workingDir = program.path;
-
-	assert( typeof config.configure === 'function' ); 
-	
 	this.checkWorkingDir = function() {
 		return new Promise( function( resolve, reject ) { 
 			fs.exists( workingDir, function(exists) {
 				if (exists) 
-					resolve( '' );
+					resolve();
 				else {
 					reject( 'working dir ' + workingDir + " doesn't exist" );
 				}
@@ -52,9 +43,13 @@ function Agent( config ) {
 
 	function spawn( cmd, args ) {
 		return new Promise( function( resolve, reject ) {
+			console.log( workingDir, '=>\n', cmd );
+			console.log( util.inspect(args) );
+			console.time( cmd );
 			cp
 			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
 			.on( 'exit', function(code, signal) {
+				console.timeEnd();
 				if (code) 
 					reject( cmd + code + signal );
 				else

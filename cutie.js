@@ -1,15 +1,20 @@
-var Agent = require( './agent' )
-  , OS = require( './mac_base' )
-  , agent = new Agent( OS );
+var program = require( 'commander' )
+  , Agent = require( './agent' )
+  , OS = require( './mac' )
+  , agent; 
 
-agent
-.checkWorkingDir()
+program
+  .version('0.0.0')
+  .option('-p, --path []', 'working directory')
+  .parse(process.argv);
+
+agent = new Agent( OS, program.path );
+
+agent.checkWorkingDir()
 .then( agent.checkEnv )
-.then( agent.configure ) 
+.then( agent.configure )
 .then( agent.build )
-.then( function() {
-	console.log( 'done' ); 
-}).catch( function( error ) {
-	console.log( error );
-}); 
-
+.then( console.log.bind( null, 'done' ) )
+.catch( function(error) {
+  console.log( error );
+});
