@@ -51,7 +51,7 @@ function Agent( config, workingDir ) {
 			.on( 'exit', function(code, signal) {
 				console.timeEnd( cmd );
 				if (code) 
-					reject( cmd + code + signal );
+					reject( { code: code, signal: signal } );
 				else
 					resolve();				
 			});
