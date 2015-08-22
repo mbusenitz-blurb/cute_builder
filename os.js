@@ -1,25 +1,26 @@
-function OS(agent) {
+var OS = {
 
-	this.install = function() {
-		agent.spawn( 'install', 'make', [ 'install' ] );
-	};
+	workingDir: '/Users/mbusenitz/Qt5/5.5/Src',
 
-	this.build = function() {
-		agent.spawn( 'build', 'make', [ '-j', '8' ] );
-	}; 
+	install: function() {
+		console.log( 'OS install' );
+		return agent.spawn( 'make', [ 'install' ] );
+	},
 
-	this.configure = function() {
-		agent.spawn( 
-			'configure', 
+	build: function() {
+		return agent.spawn( 'make', [ '-j', '8' ] );
+	}, 
+
+	configure: function(spawn) {
+		return spawn( 
 			'./configure',
 			[ 
 				"-no-xcb",
 				"-opensource",
 				"-confirm-license",
 				"--prefix=/Users/jenkins/qt_build_destination"
-			]
-		); 
-	};
+			]); 
+	}
 }
 
 module.exports = OS; 

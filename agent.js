@@ -5,10 +5,10 @@ var assert = require( 'assert' )
 
 function Agent( config ) {
 
-
 	var workingDir = config.workingDir;
 
 	assert( typeof config.configure === 'function' ); 
+	assert( typeof config.workingDir === 'string' ); 
 
 	this.checkWorkingDir = function() {
 		return new Promise( function( resolve, reject ) { 
@@ -53,13 +53,13 @@ function Agent( config ) {
 		} ); 
 	};
 
-	function spawn( name ) {
+	function spawn( cmd, args ) {
 		return new Promise( function( reslove, reject ) {
 			cp
 			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
 			.on( 'exit', function(code) {
 				if (code) 
-					reject( name );
+					reject( cmd );
 				else
 					resolve();				
 			});

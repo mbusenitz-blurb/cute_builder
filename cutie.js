@@ -1,5 +1,5 @@
 var Agent = require( './agent' )
-  , OS = require( './dummy' )
+  , OS = require( './os' )
   , agent = new Agent( OS );
 
 //agent.after( 'check permissions done', 'check working dir' );
