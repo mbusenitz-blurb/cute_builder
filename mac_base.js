@@ -1,12 +1,10 @@
 module.exports = {
 
-	install: function(spawn) {
-		return spawn( 'make', [ 'install' ] );
-	},
-
 	build: function(spawn) {
-		return spawn( 'make', [ '-j', '8' ] );
-	}, 
+		return spawn( 'make', [ '-j', '8' ] ).then( function() {
+			spawn( 'make', [ 'install' ] );
+		});
+	},
 
 	configure: function(spawn) {
 		return spawn( 

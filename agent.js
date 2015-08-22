@@ -47,19 +47,11 @@ function Agent( config ) {
 	};	
 
 	this.build = function() {
-		return new Promise( function( resolve, reject ) {
-			config.build( spawn, resolve, reject );
-		} ); 
-	};
-
-	this.install = function() {
-		return new Promise( function( resolve, reject ) {
-			config.install( spawn, resolve, reject );
-		} ); 
+		return config.build( spawn ); 
 	};
 
 	function spawn( cmd, args ) {
-		return new Promise( function( reslove, reject ) {
+		return new Promise( function( resolve, reject ) {
 			cp
 			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
 			.on( 'exit', function(code, signal) {
@@ -67,10 +59,7 @@ function Agent( config ) {
 					reject( cmd + code + signal );
 				else
 					resolve();				
-			})
-			.on( 'error', function(error) {
-				reject( cmd + ' ' + error + ' ' + workingDir );
-			} );
+			});
 		});
 	};
 }
