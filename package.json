@@ -1,5 +1,6 @@
 {
 	"dependencies": {
-		"promise": "*"
+		"promise": "*",
+		"commander": "*"
 	}
 }

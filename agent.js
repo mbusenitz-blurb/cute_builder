@@ -2,14 +2,21 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
   , Promise = require( 'promise' )
+  , program = require( 'commander' );
+
+program
+  .version('0.0.0')
+  .option('-p, --path []', 'working directory')
+  .parse(process.argv);
+
+assert( program.path ); 
 
 function Agent( config ) {
 
-	var workingDir = config.workingDir;
+	var workingDir = program.path;
 
 	assert( typeof config.configure === 'function' ); 
-	assert( typeof config.workingDir === 'string' ); 
-
+	
 	this.checkWorkingDir = function() {
 		return new Promise( function( resolve, reject ) { 
 			fs.exists( workingDir, function(exists) {
