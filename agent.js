@@ -1,66 +1,70 @@
-var cp = require( 'child_process' )
+var assert = require( 'assert' )
+  , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , util = require( 'util' )
-  , events = require( 'events' );
+  , Promise = require( 'promise' )
 
-function Agent( workingDir ) {
+function Agent( config ) {
 
-	var instance = this;
 
-	instance.on( 'check permissions', function() {
-		console.log( '* check permissions' );
-		var uid = parseInt( process.env.SUDO_UID );
-		if (!uid) {
-			console.log( 'this must be run with sudo!' );
-			instance.emit( 'check permissions done', 1 ); 
-		}  
-		else {
-			process.setuid( uid );
-			instance.emit( 'check permissions done', 0 ); 
-		}
-	} ); 
-	
-	instance.on( 'check working dir', function() {
-		console.log( '* check working dir: ', workingDir );
-		fs.exists( workingDir, function(exists) {
-			instance.emit( 'check working dir done', exists ? 0 : 1 ); 
-		});
-	});
+	var workingDir = config.workingDir;
 
-	instance.on( 'check env', function() {
-		console.log( '* check env:' );
-		cp.fork( 'check_env' )
-		.on( 'exit', function(code) { 
-			instance.emit( 'check env done', code ); 
-		});
-	});
+	assert( typeof config.configure === 'function' ); 
 
-	instance.spawn = function( name, cmd, args ) {
-		console.log( '* ' + name + ':', cmd, args ); 
-		cp
-		.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
-		.on( 'exit', function(code) {
-			instance.emit( name + ' done', code ); 
-		});
+	this.checkWorkingDir = function() {
+		return new Promise( function( resolve, reject ) { 
+			fs.exists( workingDir, function(exists) {
+				if (exists) 
+					resolve( '' );
+				else {
+					reject( 'working dir ' + workingDir + " doesn't exist" );
+				}
+			});	
+		} ); 
 	};
 
-	instance.after = function( pre, post ) {
-		instance.on( pre, function(code) {
-			if (!code) {
-				if (typeof post === 'function') {
-					post();
-				}
-				else {
-					instance.emit( post ); 
-				}
-			}
-			else {
-				console.log( '"' + pre + '" result: failed' );
-			}
-		} );
+	this.checkEnv = function() {
+		return new Promise( function( resolve, reject ) {
+			cp
+			.fork( 'check_env' )
+			.on( 'exit', function(code) { 
+				if (code) 
+					reject( 'check environment failed' );
+				else
+					resolve();
+			});
+		} ); 
+	};
+
+	this.configure = function() {
+		return new Promise( function( resolve, reject ) {
+			config.configure( spawn, resolve, reject ); 
+		} ); 
+	};
+
+	this.build = function() {
+		return new Promise( function( resolve, reject ) {
+			config.build( spawn, resolve, reject );
+		} ); 
+	};
+
+	this.install = function() {
+		return new Promise( function( resolve, reject ) {
+			config.install( spawn, resolve, reject );
+		} ); 
+	};
+
+	function spawn( name ) {
+		return new Promise( function( reslove, reject ) {
+			cp
+			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
+			.on( 'exit', function(code) {
+				if (code) 
+					reject( name );
+				else
+					resolve();				
+			});
+		});
 	};
 }
-
-util.inherits( Agent, events.EventEmitter ); 
 
 module.exports = Agent;
