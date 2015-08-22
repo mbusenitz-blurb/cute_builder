@@ -49,7 +49,7 @@ function Agent( config, workingDir ) {
 			cp
 			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
 			.on( 'exit', function(code, signal) {
-				console.timeEnd();
+				console.timeEnd( cmd );
 				if (code) 
 					reject( cmd + code + signal );
 				else
