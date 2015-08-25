@@ -1,19 +1,20 @@
-module.exports = {
-
-	build: function(spawn) {
+function Mac(buildDir) {
+	this.build = function(spawn) {
 		return spawn( 'make', [ '-j', '8' ] ).then( function() {
 			spawn( 'make', [ 'install' ] );
 		});
-	},
+	}; 
 
-	configure: function(spawn) {
+	this.configure = function(spawn) {
 		return spawn( 
 			'./configure',
 			[ 
 				"-no-xcb",
 				"-opensource",
 				"-confirm-license",
-				"--prefix=/Users/jenkins/qt_build_destination"
+				"--prefix=" + buildDir
 			]); 
 	}
 }; 
+
+module.exports = Mac;

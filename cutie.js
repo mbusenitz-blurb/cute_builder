@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var program = require( 'commander' )
   , Agent = require( './agent' )
   , OS = require( process.platform === 'win32' ? './win' : './mac' ); 
@@ -5,9 +7,10 @@ var program = require( 'commander' )
 program
   .version('0.0.0')
   .option('-p, --path []', 'working directory')
+  .option('-b, --build []', 'build directory ')
   .parse(process.argv);
 
-buildQt( new Agent( OS, program.path ) );
+buildQt( new Agent( new OS( program.build ), program.path ) );
 
 function buildQt(agent) {
   agent.checkWorkingDir()

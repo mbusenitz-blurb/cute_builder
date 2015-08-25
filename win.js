@@ -1,10 +1,11 @@
-module.exports = {
 
-	build: function(spawn) {
+function Win(buildDir) {
+
+	this.build = function(spawn) {
 		return spawn( 'build', 'nmake', [ 'install' ] );
-	},
+	};
 
-	configure: function(spawn) {
+	this.configure = function(spawn) {
 		return spawn( 
 			'cmd.exe',
 			[ 
@@ -12,7 +13,7 @@ module.exports = {
 				'/c', 
 				'configure.bat',
 				'-debug-and-release',
-				'-prefix', 'C:\\Qt\\5.4.1_test_build\\msvc2013',
+				'-prefix', buildDir,
 				'-commercial',
 				'-nomake', 'tests', 
 				'-nomake', 'examples', 
@@ -21,5 +22,7 @@ module.exports = {
 				'-opengl', 'desktop', 
 				'-openssl', '-I', 'C:\\OpenSSL-Win32\\include', '-L', 'C:\\OpenSSL-Win32\\lib'
 			]); 
-	}
+	};
 };
+
+module.exports = Win;
