@@ -6,7 +6,7 @@ var assert = require( 'assert' )
 
 function Agent( config, workingDir ) {
 
-	assert( typeof workingDir !== 'undefined' );  
+	assert( typeof workingDir !== 'undefined', 'no working directory specified' );  
 
 	this.checkWorkingDir = function() {
 		return new Promise( function( resolve, reject ) { 
