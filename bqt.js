@@ -4,7 +4,7 @@ var program = require( 'commander' )
   , Agent = require( './agent' )
   , OS = require( isWindows() ? './win' : './mac' ); 
 
-if (!isWindows())
+if (!isWindows()) {
   var uid = parseInt( process.env.SUDO_UID );
   if (!uid) {
     throw( 'cute builder must be run with sudo/admin privileges!' );    
