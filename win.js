@@ -2,12 +2,12 @@
 function Win(buildDir) {
 
 	this.build = function(spawn) {
-		return spawn( 'build', 'nmake', [ 'install' ] );
+		return spawn( 'nmake', [ 'install' ] );
 	};
 
 	this.configure = function(spawn) {
 		return spawn( 
-			'cmd.exe',
+			'cmd.exe',			
 			[ 
 				'/s', 
 				'/c', 

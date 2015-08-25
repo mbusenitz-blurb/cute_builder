@@ -1,6 +1,7 @@
 var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
+  , path = require( 'path' )
   , util = require( 'util' )
   , Promise = require( 'promise' ); 
 
@@ -23,7 +24,7 @@ function Agent( config, workingDir ) {
 	this.checkEnv = function() {
 		return new Promise( function( resolve, reject ) {
 			cp
-			.fork( 'check_env' )
+			.fork( path.join( __dirname, 'check_env' ) )
 			.on( 'exit', function(code) { 
 				if (code) 
 					reject( 'check environment failed' );
