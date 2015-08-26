@@ -23,6 +23,10 @@ function Win(buildDir) {
 				'-openssl', '-I', 'C:\\OpenSSL-Win32\\include', '-L', 'C:\\OpenSSL-Win32\\lib'
 			]); 
 	};
+
+	this.clean = function(spawn) {
+		return spawn( 'nmake', [ 'clean' ] );
+	};
 };
 
 module.exports = Win;

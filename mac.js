@@ -2,7 +2,7 @@ function Mac(buildDir) {
 	this.build = function(spawn) {
 		return spawn( 'make', [ '-j', '8' ] ).then( function() {
 			spawn( 'make', [ 'install' ] );
-		});
+		}); 
 	}; 
 
 	this.configure = function(spawn) {
@@ -14,7 +14,11 @@ function Mac(buildDir) {
 				"-confirm-license",
 				"--prefix=" + buildDir
 			]); 
-	}
+	};
+
+	this.clean = function(spawn) {
+		return spawn( 'make', [ 'clean' ] );
+	};
 }; 
 
 module.exports = Mac;

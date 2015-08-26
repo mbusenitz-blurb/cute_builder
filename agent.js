@@ -42,6 +42,10 @@ function Agent( config, workingDir ) {
 		return config.build( spawn ); 
 	};
 
+	this.clean = function() {
+		return config.clean( spawn ); 
+	};
+
 	function spawn( cmd, args ) {
 		return new Promise( function( resolve, reject ) {
 			console.log( workingDir, '=>\n', cmd );
