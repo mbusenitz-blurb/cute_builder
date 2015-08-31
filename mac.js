@@ -1,7 +1,7 @@
 function Mac(buildDir) {
 	this.build = function(spawn) {
 		return spawn( 'make', [ '-j', '8' ] ).then( function() {
-			spawn( 'make', [ 'install' ] );
+			spawn( 'sudo', [ 'make', 'install' ] );
 		}); 
 	}; 
 
