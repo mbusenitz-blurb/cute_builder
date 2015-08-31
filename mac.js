@@ -7,8 +7,9 @@ function Mac(buildDir) {
 
 	this.configure = function(spawn) {
 		return spawn( 
-			'./configure',
-			[ 
+			'sudo', 
+			[ 	
+				"./configure",
 				"-no-xcb",
 				"-opensource",
 				"-confirm-license",

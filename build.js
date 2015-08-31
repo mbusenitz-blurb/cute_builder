@@ -16,6 +16,10 @@ function buildQt(agent) {
   agent.checkWorkingDir()
   .then( agent.checkEnv )
   .then( agent.clean )
+  .catch( function(error) {
+    console.log( 'clean failed: ', error );
+    return agent.configure();
+  })
   .then( agent.configure )
   .then( agent.build )
   .then( console.log.bind( null, 'done' ) )
