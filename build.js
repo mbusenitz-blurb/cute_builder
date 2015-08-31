@@ -2,13 +2,18 @@
 
 var program = require( 'commander' )
   , Agent = require( './agent' )
-  , OS = require( isWindows() ? './win' : './mac' ); 
+  , OS = require( isWindows() ? './win' : './mac' )
+  , fs = require( 'fs' );
 
 program
   .version('0.0.0')
   .option('-p, --path []', 'working directory')
   .option('-b, --build []', 'build directory ')
   .parse(process.argv);
+
+if (isWindows() && !fs.existsSync( 'C:\\OpenSSL-Win32\\lib')) {
+  throw "ivalid OpenSSL-Win32 lib path specified";
+}
 
 buildQt( new Agent( new OS( program.build ), program.path ) );
 
