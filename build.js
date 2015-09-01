@@ -9,6 +9,7 @@ program
   .version('0.0.0')
   .option('-p, --path []', 'working directory')
   .option('-b, --build []', 'build directory ')
+  .option('-d, --dry', 'dry run' )
   .parse(process.argv);
 
 if (isWindows() && !fs.existsSync( 'C:\\OpenSSL-Win32\\lib')) {

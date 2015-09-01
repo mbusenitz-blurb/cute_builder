@@ -54,15 +54,22 @@ function Agent( impl, config ) {
 			console.log( workingDir, '=>\n', cmd );
 			console.log( util.inspect(args) );
 			console.time( cmd );
-			cp
-			.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
-			.on( 'exit', function(code, signal) {
-				console.timeEnd( cmd );
-				if (code) 
-					reject( { code: code, signal: signal } );
-				else
-					resolve();				
-			});
+			
+			if (config.dry) {
+				console.log( 'skipping over ... \n' ); 
+				resolve(); 
+			}
+			else {
+				cp
+				.spawn( cmd, args, { stdio: 'inherit', cwd: workingDir } )
+				.on( 'exit', function(code, signal) {
+					console.timeEnd( cmd );
+					if (code) 
+						reject( { code: code, signal: signal } );
+					else
+						resolve();				
+				});
+			}
 		});
 	};
 }
