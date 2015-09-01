@@ -5,9 +5,12 @@ var assert = require( 'assert' )
   , util = require( 'util' )
   , Promise = require( 'promise' ); 
 
-function Agent( config, workingDir ) {
+function Agent( impl, config ) {
 
-	assert( typeof workingDir !== 'undefined', 'no working directory specified' );  
+	assert( typeof config !== 'undefined' );  
+	assert( config.hasOwnProperty( 'path' ), 'no working directory specified' );  
+
+	var workingDir = config.path;
 
 	this.checkWorkingDir = function() {
 		return new Promise( function( resolve, reject ) { 
@@ -35,15 +38,15 @@ function Agent( config, workingDir ) {
 	};
 
 	this.configure = function() {
-		return config.configure( spawn ); 
+		return impl.configure( spawn ); 
 	};	
 
 	this.build = function() {
-		return config.build( spawn ); 
+		return impl.build( spawn ); 
 	};
 
 	this.clean = function() {
-		return config.clean( spawn ); 
+		return impl.clean( spawn ); 
 	};
 
 	function spawn( cmd, args ) {

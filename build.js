@@ -15,7 +15,7 @@ if (isWindows() && !fs.existsSync( 'C:\\OpenSSL-Win32\\lib')) {
   throw "ivalid OpenSSL-Win32 lib path specified";
 }
 
-buildQt( new Agent( new OS( program.build ), program.path ) );
+buildQt( new Agent( new OS( program.build ), program ) );
 
 function buildQt(agent) {
   agent.checkWorkingDir()
