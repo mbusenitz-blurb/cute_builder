@@ -34,7 +34,7 @@ function Agent( impl, config ) {
 				else
 					resolve();
 			});
-		} ); 
+		} );
 	};
 
 	this.configure = function() {
@@ -68,6 +68,9 @@ function Agent( impl, config ) {
 						reject( { code: code, signal: signal } );
 					else
 						resolve();				
+				})
+				.on( 'error', function(err) {
+					reject( err );
 				});
 			}
 		});

@@ -3,11 +3,11 @@ function Mac(buildDir) {
 		return spawn( 'make', [ '-j', '8' ] )
 		.then( function() {
 			spawn( 'make', [ 'install' ] );
-		}); 
+		});
 	}; 
 
 	this.configure = function(spawn) {
-		return spawn( 
+		return spawn(
 			'./configure', 
 			[ 	
 				'-no-xcb',

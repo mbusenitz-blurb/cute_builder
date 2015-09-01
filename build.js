@@ -13,25 +13,30 @@ program
   .parse(process.argv);
 
 if (isWindows() && !fs.existsSync( 'C:\\OpenSSL-Win32\\lib')) {
-  throw "ivalid OpenSSL-Win32 lib path specified";
+  throw "Invalid OpenSSL-Win32 lib path specified";
 }
 
 buildQt( new Agent( new OS( program.build ), program ) );
 
 function buildQt(agent) {
-  agent.checkWorkingDir()
+  agent
+  .checkWorkingDir()
   .then( agent.checkEnv )
+  .catch( fail )
   .then( agent.clean )
-  .catch( function(error) {
-    console.log( 'clean failed: ', error );
-    return agent.configure();
-  })
+  .catch( print )
   .then( agent.configure )
   .then( agent.build )
-  .then( console.log.bind( null, 'done' ) )
-  .catch( function(error) {
-    console.log( error );
-  });
+  .catch( print );
+
+  function fail(err) {
+    print( err ); 
+    process.exit(0); 
+  }
+
+  function print(msg) {
+    console.log( msg ); 
+  }
 }
 
 function isWindows() {
