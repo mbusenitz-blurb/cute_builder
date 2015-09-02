@@ -4,7 +4,12 @@ function Win(buildDir) {
 
 	this.checkEnv = function(spawn) {
 		return new Promise( function( reslove, reject ) {
-			reslove(); 
+			fs.exists( 'C:\\OpenSSL-Win32\\lib', function(exists) {
+				if (exists)
+					reslove(); 
+				else
+					reject( "Invalid OpenSSL-Win32 lib path specified" );
+			} ); 
 		});
 	};
 
