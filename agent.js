@@ -25,16 +25,18 @@ function Agent( impl, config ) {
 	};
 
 	this.checkEnv = function() {
-		return new Promise( function( resolve, reject ) {
-			cp
-			.fork( path.join( __dirname, 'check_env' ) )
-			.on( 'exit', function(code) { 
-				if (code) 
-					reject( 'check environment failed' );
-				else
-					resolve();
-			});
-		} );
+		return impl.checkEnv( spawn ).then( function() {
+			return new Promise( function( resolve, reject ) {
+				cp
+				.fork( path.join( __dirname, 'check_env' ) )
+				.on( 'exit', function(code) { 
+					if (code) 
+						reject( 'check environment failed' );
+					else
+						resolve();
+				});
+			} );
+		});
 	};
 
 	this.configure = function() {

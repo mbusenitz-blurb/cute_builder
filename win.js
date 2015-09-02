@@ -1,5 +1,12 @@
+var fs = require( 'fs' );
 
 function Win(buildDir) {
+
+	this.checkEnv = function(spawn) {
+		return new Promise( function( reslove, reject ) {
+			reslove(); 
+		});
+	};
 
 	this.build = function(spawn) {
 		return spawn( 'nmake', [ 'install' ] );

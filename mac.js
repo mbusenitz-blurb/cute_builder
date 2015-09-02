@@ -1,4 +1,13 @@
+var Promise = require( 'promise' );
+
 function Mac(buildDir) {
+	
+	this.checkEnv = function(spawn) {
+		return new Promise( function( reslove, reject ) {
+			reslove(); 
+		});
+	};
+
 	this.build = function(spawn) {
 		return spawn( 'make', [ '-j', '8' ] )
 		.then( function() {

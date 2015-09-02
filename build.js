@@ -2,8 +2,7 @@
 
 var program = require( 'commander' )
   , Agent = require( './agent' )
-  , OS = require( isWindows() ? './win' : './mac' )
-  , fs = require( 'fs' );
+  , OS = require( isWindows() ? './win' : './mac' );
 
 program
   .version('0.0.0')
@@ -11,10 +10,6 @@ program
   .option('-b, --build []', 'build directory ')
   .option('-d, --dry', 'dry run' )
   .parse(process.argv);
-
-if (isWindows() && !fs.existsSync( 'C:\\OpenSSL-Win32\\lib')) {
-  throw "Invalid OpenSSL-Win32 lib path specified";
-}
 
 buildQt( new Agent( new OS( program.build ), program ) );
 
@@ -27,7 +22,7 @@ function buildQt(agent) {
   .catch( print )
   .then( agent.configure )
   .then( agent.build )
-  .catch( print );
+  .catch( fail )
 
   function fail(err) {
     print( err ); 
